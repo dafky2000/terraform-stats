@@ -14,8 +14,8 @@ let LAST_UPDATE = new Date();
 let DATA = {};
 let RENDERED_DATA = {};
 function data_update() {
-	// fetch('https://api.auction.decentraland.org/api/parcelState/range/-150,-150/150,150')
-	fetch('https://api.auction.decentraland.org/api/parcelState/range/-25,-25/25,25')
+	fetch('https://api.auction.decentraland.org/api/parcelState/range/-150,-150/150,150')
+	// fetch('https://api.auction.decentraland.org/api/parcelState/range/-25,-25/25,25')
 		.then(function(res) {
 			return res.text();
 		}).then(function(ret) {
