@@ -14,8 +14,8 @@ let LAST_UPDATE = new Date();
 let DATA = {};
 let RENDERED_DATA = {};
 function data_update() {
-	fetch('https://api.auction.decentraland.org/api/parcelState/range/-150,-150/150,150')
-	// fetch('https://api.auction.decentraland.org/api/parcelState/range/-25,-25/25,25')
+	// fetch('https://api.auction.decentraland.org/api/parcelState/range/-150,-150/150,150')
+	fetch('https://api.auction.decentraland.org/api/parcelState/range/-50,-50/50,50')
 		.then(function(res) {
 			return res.text();
 		}).then(function(ret) {
@@ -24,8 +24,9 @@ function data_update() {
 			LAST_UPDATE = new Date();
 			setTimeout(data_update, 300000);
 		}).then(function() {
-			const data_w_amount = DATA.filter(function(data) { return !isNaN(parseInt(data.amount)); });
-			const data_wo_amount = DATA.filter(function(data) { return isNaN(parseInt(data.amount)); });
+			const data_for_auction = DATA.filter(function(data) { return !data.projectId; });
+			const data_w_amount = data_for_auction.filter(function(data) { return (!isNaN(parseInt(data.amount))); });
+			const data_wo_amount = data_for_auction.filter(function(data) { return (isNaN(parseInt(data.amount))); });
 			const data_w_amount_first = data_w_amount.filter(function(data) { return (data.x <= 13 && data.x >= -12 && data.y <= 12 && data.y >= -12); });
 			const data_parcels_per_address = data_w_amount.reduce(function(accum, data) { accum[data.address] = (accum[data.address] || 0) + 1; return accum;   }, {});
 			const data_parcels_per_address_sorted = Object.keys(data_parcels_per_address).map(function(item) { return [item, data_parcels_per_address[item]]; }).sort(function(a, b) { return b[1] - a[1]; });
@@ -35,10 +36,10 @@ function data_update() {
 			RENDERED_DATA = {
 				public: {
 					total_bid: data_w_amount.reduce(function(accum, data) { return accum += parseInt(data.amount); }, 0).toLocaleString(),
-					avg_bid: (
+					avg_bid: parseInt(
 							data_w_amount.reduce(function(accum, data) { return accum += parseInt(data.amount);  }, 0) / data_w_amount.length
 					).toLocaleString(),
-					avg_bid_first_circle: (
+					avg_bid_first_circle: parseInt(
 							data_w_amount_first.reduce(function(accum, data) { return accum += parseInt(data.amount);  }, 0) / data_w_amount_first.length
 					).toLocaleString(),
 					max_bid: Math.max.apply(null, data_w_amount.map(function(data) { return data.amount; })).toLocaleString(),
