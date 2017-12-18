@@ -133,16 +133,16 @@
 				<table class="table key_value">
 					<tbody>
 						<tr id="TotalStaked_MANA_ROW">
-							<th>Total Mana staked <span class="small">(not inc. bonus)</span></th>
-							<td id="TotalStaked_MANA"></td>
+							<th>Total staked <span class="small">(not inc. bonus)</span></th>
+							<td><span id="TotalStaked_MANA"></span> <span class="small">MANA</span></td>
 						</tr>
 						<tr>
-							<th>Your Mana balance</th>
-							<td id="Balance_Total"></td>
+							<th>Your wallet balance</th>
+							<td><span id="Balance_Total"></span> <span class="small">MANA</span></td>
 						</tr>
 						<tr id="Staked_MANA_ROW">
-							<th>Your Mana staked <span class="small">(not inc. bonus)</span></th>
-							<td id="Staked_MANA"></td>
+							<th>Your stake in the auction <span class="small">(not inc. bonus)</span></th>
+							<td><span id="Staked_MANA"></span> <span class="small">MANA</span></td>
 						</tr>
 					</tbody>
 				</table>
@@ -158,11 +158,11 @@
             <td>{{public.total_bid}} <span class="small">MANA</span></td>
           </tr>
           <tr>
-            <th>Avg bid per LAND<span class="small">(entire auction)</span></th>
+            <th>Avg bid per LAND <span class="small">(entire auction)</span></th>
             <td>{{public.avg_bid}} <span class="small">MANA</span></td>
           </tr>
           <tr>
-            <th>Avg bid per LAND<span class="small">(first circle, -12,-12 to 13,12)</span></th>
+            <th>Avg bid per LAND <span class="small">(first circle, -12,-12 to 13,12)</span></th>
             <td>{{public.avg_bid_first_circle}} <span class="small">MANA</span></td>
           </tr>
           <tr>
