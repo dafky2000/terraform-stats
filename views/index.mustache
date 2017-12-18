@@ -1,0 +1,278 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<meta name="description" content="Personal homepage of Dan Kelly (dafky2000)">
+		<meta name="author" content="Daniel Kelly">
+		<link rel="shortcut icon" type="image/png" href="/img/me.png"/>
+
+		<title>Terraform Statistics</title>
+
+		<!-- Bootstrap CSS (before any other stylesheets) -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://getbootstrap.com/docs/4.0/examples/narrow-jumbotron/narrow-jumbotron.css">
+
+		<!-- Font-awesome -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+		<script type="text/javascript" src="https://cdn.rawgit.com/MikeMcl/bignumber.js/master/bignumber.min.js"></script>
+
+		<script type="text/javascript">
+			function startApp() {
+				DCL_ADDRESS = web3.eth.accounts[0];
+				ethAddressChanged(DCL_ADDRESS);
+
+				var accountInterval = setInterval(function() {
+					if (web3.eth.accounts[0] !== DCL_ADDRESS) {
+						DCL_ADDRESS = web3.eth.accounts[0];
+						ethAddressChanged(DCL_ADDRESS);
+					}
+				}, 300);
+			}
+
+			function ethAddressChanged(account) {
+				document.querySelector('#EthAddress').innerText = account || '...';
+
+				// If we have a set account show all the stuff that appears with a set account
+				if(account)	Array.prototype.slice.call(document.querySelectorAll('.have_address')).map(function(item) { item.style.display = 'initial'; });
+				else Array.prototype.slice.call(document.querySelectorAll('.have_address')).map(function(item) { item.style.display = 'none'; });
+
+				if(account)	Array.prototype.slice.call(document.querySelectorAll('.no_address')).map(function(item) { item.style.display = 'none'; });
+				else Array.prototype.slice.call(document.querySelectorAll('.no_address')).map(function(item) { item.style.display = 'initial'; });
+
+				let contract_address = DCL_MANA_ADDRESS;
+				let contract_abi = DCL_MANA_ABI;
+				let auction_address = DCL_AUCTION_ADDRESS;
+				let auction_abi = DCL_AUCTION_ABI;
+				let dcl_contract = web3.eth.contract(contract_abi).at(contract_address);
+				let dcl_spender_contract = web3.eth.contract(auction_abi).at(auction_address);
+
+				dcl_contract.decimals(function(error, decimals) {
+					// Current balance
+					dcl_contract.balanceOf(account, function(err, balance) {
+						document.querySelector('#Balance_Total').innerText = balance.div(new BigNumber(10).pow(decimals)).toString(10);
+					});
+
+					// Currently locked/staked
+					if(dcl_spender_contract !== null) {
+						dcl_spender_contract.lockedBalance(account, function(err, balance) {
+							document.querySelector('#Staked_MANA').innerText = parseInt(balance.div(new BigNumber(10).pow(decimals)).toString(10)).toLocaleString();
+						});
+
+						dcl_spender_contract.totalLocked(function(err, balance) {
+							document.querySelector('#TotalStaked_MANA').innerText = parseInt(balance.div(new BigNumber(10).pow(decimals)).toString(10)).toLocaleString();
+						});
+					}
+				});
+			}
+		</script>
+
+		<style>
+			body {
+				padding-top: 5rem;
+			}
+			.starter-template {
+				padding: 3rem 1.5rem 1.5rem;
+				text-align: center;
+			}
+			.no_address {
+				margin-bottom: 1em;
+			}
+			.have_address {
+				display: none;
+			}
+			#EthAddress {
+				font-weight: bold;
+			}
+      table.key_value td:nth-child(2) {
+        text-align:right;
+      }
+		</style>
+	</head>
+	<body style="padding-top:4.5em;">
+		<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+			<a class="navbar-brand" href="/">Terraform Stats</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="nav-link" href="/#">Home</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="http://auction.decentraland.fyi" target="_blank">View-only Auction</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="https://auction.decentraland.org" target="_blank">Real Auction</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+
+		<main role="main" class="container">
+			<div class="starter-template">
+				<h1>Terraform statistics</h1>
+				<p class="lead">Interesting and valuable statistics about the Decentraland Terraform auction</p>
+
+				<p>Donations welcomed and appreciated, not required! Mana, Ethereum, any ERC20 tokens!</p>
+				<p><strong>0x600EC13933A0956857e54de1Fb2A8ee4c9e32031</strong></p>
+			</div>
+
+			<div class="no_address alert alert-warning" role="alert">Currently trying to get your address from MetaMask...</div>
+
+			<div class="form-group have_address">
+				<div class="alert alert-success" role="alert">Address detected from MetaMask <span id="EthAddress">...</span></div>
+
+        <h2>Network Statistics</h2>
+				<table class="table key_value">
+					<tbody>
+						<tr id="TotalStaked_MANA_ROW">
+							<th>Total Mana staked <span class="small">(not inc. bonus)</span></th>
+							<td id="TotalStaked_MANA"></td>
+						</tr>
+						<tr>
+							<th>Your Mana balance</th>
+							<td id="Balance_Total"></td>
+						</tr>
+						<tr id="Staked_MANA_ROW">
+							<th>Your Mana staked <span class="small">(not inc. bonus)</span></th>
+							<td id="Staked_MANA"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+      <h2>Public Statistics</h2>
+      <p class="lead small">Last updated: {{public.last_update}}</p>
+
+      <table class="table key_value">
+        <tbody>
+          <tr>
+            <th>Total bid amount</th>
+            <td>{{public.total_bid}}</td>
+          </tr>
+          <tr>
+            <th>Avg bid <span class="small">(entire auction)</span></th>
+            <td>{{public.avg_bid}}</td>
+          </tr>
+          <tr>
+            <th>Avg bid <span class="small">(first circle, -12,-12 to 13,12)</span></th>
+            <td>{{public.avg_bid_first_circle}}</td>
+          </tr>
+          <tr>
+            <th>Max bid</th>
+            <td>{{public.max_bid}}</td>
+          </tr>
+          <tr>
+            <th>Parcels w/o bids</th>
+            <td>{{public.parcels_wo_bids}}</td>
+          </tr>
+          <tr>
+            <th>Most winning land count</th>
+            <td>{{public.most_winning_count}}</td>
+          </tr>
+          <tr>
+            <th>Most bid MANA</th>
+            <td>{{public.most_bid}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+			<footer class="footer">
+				<nav>
+					<ul class="nav nav-pills float-right">
+						<li class="nav-item">
+							<a class="nav-link" href="https://github.com/dafky2000" target="_blank" rel="noopener" aria-label="Github" title="Github"><i class="fa fa-github" aria-hidden="true"></i> Github</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="https://twitter.com/dafky2000" target="_blank" rel="noopener" aria-label="Twitter" title="Twitter"><i class="fa fa-twitter" aria-hidden="true"></i> Twitter</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="https://facebook.com/dafky2000" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook"><i class="fa fa-facebook" aria-hidden="true"></i> Facebook</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="https://www.linkedin.com/in/dafky2000" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i> LinkedIn</a>
+						</li>
+						<li class="nav-item">
+							<span class="nav-link">&copy; Daniel Kelly 2017</span>
+						</li>
+					</ul>
+				</nav>
+			</footer>
+		</main><!-- /.container -->
+
+		<!-- Optional JavaScript -->
+		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+		<!-- End of body -->
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+
+		<script type="text/javascript">
+			let CURRENT_DCL_ADDRESS = null;
+			let DCL_MANA_ADDRESS = '0x0F5D2fB29fb7d3CFeE444a200298f468908cC942';
+			let DCL_MANA_ABI = [{"constant":true,"inputs":[],"name":"mintingFinished","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"unpause","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"mint","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_value","type":"uint256"}],"name":"burn","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"paused","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"finishMinting","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"pause","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"remaining","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Mint","type":"event"},{"anonymous":false,"inputs":[],"name":"MintFinished","type":"event"},{"anonymous":false,"inputs":[],"name":"Pause","type":"event"},{"anonymous":false,"inputs":[],"name":"Unpause","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"burner","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Burn","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}];
+			let DCL_AUCTION_ADDRESS = '0xCCA95E580BbbD04851EBFB85F77FD46C9b91f11C';
+			let DCL_AUCTION_ABI = [{"constant":false,"inputs":[{"name":"target","type":"address"}],"name":"setTargetContract","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"totalLocked","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_acceptingDeposits","type":"bool"}],"name":"changeContractState","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"mana","type":"uint256"}],"name":"lockMana","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"manaToken","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"landClaim","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"lockedBalance","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"acceptingDeposits","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"type":"function"},{"inputs":[{"name":"_token","type":"address"}],"payable":false,"type":"constructor"},{"payable":true,"type":"fallback"},{"anonymous":false,"inputs":[{"indexed":false,"name":"user","type":"address"},{"indexed":false,"name":"mana","type":"uint256"}],"name":"LockedBalance","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"target","type":"address"}],"name":"LandClaimContractSet","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"user","type":"address"},{"indexed":false,"name":"value","type":"uint256"},{"indexed":false,"name":"data","type":"bytes"}],"name":"LandClaimExecuted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_acceptingDeposits","type":"bool"}],"name":"AcceptingDepositsChanged","type":"event"}];
+
+			(function detectWeb3OrFallback(callback, options) {
+				// MetaMask sometimes defines it immediately, before page load
+				// Adding a check here shaves some ms on the UX
+				if (typeof web3 !== 'undefined') {
+					callback();
+				} else {
+					window.addEventListener('load', checkForInjectedWeb3)
+				}
+
+				// Check
+				function checkForInjectedWeb3() {
+					// Checking if Web3 has been injected by the browser (Mist/MetaMask)
+					if (typeof web3 !== 'undefined') {
+						callback();
+					} else {
+						var loading = _loadScript(options.fallbackWeb3Url);
+						loading.addEventListener('load', useFallbackWeb3);
+					}
+				}
+
+				function useFallbackWeb3() {
+					// fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+					window.web3 = new Web3(new Web3.providers.HttpProvider(options.fallbackProviderUrl));
+					options.onFallback();
+				}
+			})(function() {
+				// We found an injected web3, lets load the application script
+				// _loadScript('/index.js')
+				startApp();
+			}, {
+				fallbackProviderUrl: "MY_HOSTED_WEB3_NODE_PLZ_DONT_DDOS_IT_IF_YOU_SEE_IT",
+				fallbackWeb3Url: 'https://cdn.rawgit.com/ethereum/web3.js/64c932cf/dist/web3.min.js',
+				onFallback: function() {
+					// This is what I do personally
+					// Take the user to a page allowing them to
+					// Download metamask, or say "fuckit" and continue
+					// with a fallback web3
+					// My app is an SPA, so react eventually parses the history when it loads
+
+					// window.history.pushState({}, null, '/no-web3')
+					// window.usingFallbackWeb3 = true;
+					// _loadScript('/index.js');
+				}
+			})
+
+			function _loadScript(src) {
+				var appScript = document.createElement("script");
+				appScript.async = true;
+				appScript.src = src;
+				document.body.appendChild(appScript);
+				return appScript
+			}
+		</script>
+	</body>
+</html>

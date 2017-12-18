@@ -1,0 +1,24 @@
+{
+  "name": "terraform-stats",
+  "version": "1.0.0",
+  "description": "General Decentraland auction and Terraform statistics",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/dafky2000/terraform-stats.git"
+  },
+  "author": "Daniel Kelly",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dafky2000/terraform-stats/issues"
+  },
+  "homepage": "https://github.com/dafky2000/terraform-stats#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "mustache-express": "^1.2.5",
+    "node-fetch": "^1.7.3"
+  }
+}
