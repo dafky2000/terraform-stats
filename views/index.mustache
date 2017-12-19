@@ -39,6 +39,9 @@
 			function ethAddressChanged(account) {
 				document.querySelector('#EthAddress').innerText = account || '...';
 
+        if(account)
+          document.querySelector('a.LinkToAddressOfficialStats').setAttribute('href', 'https://auction.decentraland.org/addressStats/' + account);
+
         // Populate districts for address
         if(account) {
           var xhttp = new XMLHttpRequest();
@@ -172,10 +175,10 @@
 						<a class="nav-link" href="/#">Home</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="http://auction.decentraland.fyi" target="_blank">View-only Auction</a>
+						<a class="nav-link" href="https://auction.decentraland.org" target="_blank">Official Auction</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="https://auction.decentraland.org" target="_blank">Real Auction</a>
+						<a class="nav-link" href="https://decentraland.org" target="_blank">Official Website</a>
 					</li>
 				</ul>
 			</div>
@@ -194,15 +197,20 @@
       <!-- <p class="lead small">(Does not load automatically, press the "Load it!" button above!)</p> -->
       <div id="svg_loader" style="margin:0 auto; display:none;"></div>
       <div id="decentraland-map"></div>
-      <p class="lead small text-right">Interactive Decentraland map by <a href="https://github.com/josiah47/decentraland-map/" target="_blank">@josiah47</a><br />ETH &amp; ERC20 donations - 0xee9268a3bc0Db1Ca59427125fDb75916884bd89e</p>
+      <p class="lead small text-right">
+        Last updated: {{public.last_update}} <span class="small">UTC</span><br />
+        Interactive Decentraland map by <a href="https://github.com/josiah47/decentraland-map/" target="_blank">@josiah47</a><br />
+        ETH &amp; ERC20 donations - 0xee9268a3bc0Db1Ca59427125fDb75916884bd89e
+      </p>
       <script type="text/javascript" src="/static/decentraland-map.js"></script>
 
 			<div class="form-group">
         <h2>Network Statistics</h2>
+        <p class="lead small">You may also view your personal statistics on the official <a class="LinkToAddressOfficialStats" href="" target="_blank">address statistics page</a></p>
         <div class="no_address alert alert-warning" role="alert">Currently trying to get your address from MetaMask...</div>
         <div class="have_address alert alert-success" role="alert">Address detected from MetaMask <span id="EthAddress">...</span></div>
         <div class="have_address">
-          <table class="table key_value">
+          <table class="table key_value" style="margin-bottom:0;">
             <tbody>
               <tr id="TotalStaked_MANA_ROW">
                 <th>Total staked <span class="small">(not inc. bonus)</span></th>
@@ -233,7 +241,10 @@
 			</div>
 
       <h2>Public Statistics</h2>
-      <p class="lead small">Last updated: {{public.last_update}} <span class="small">UTC</span></p>
+      <p class="lead small">
+        You may also view public statistics on the official <a class="LinkToAddressOfficialStats" href="" target="_blank">statistics page</a><br />
+        Last updated: {{public.last_update}} <span class="small">UTC</span>
+      </p>
 
       <table class="table key_value">
         <tbody>
