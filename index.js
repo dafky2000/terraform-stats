@@ -32,11 +32,13 @@ function data_update() {
 			const data_parcels_per_address_sorted = Object.keys(data_parcels_per_address).map(function(item) { return [item, data_parcels_per_address[item]]; }).sort(function(a, b) { return b[1] - a[1]; });
 			const data_amount_per_address = data_w_amount.reduce(function(accum, data) { accum[data.address] = (accum[data.address] || 0) + parseInt(data.amount); return accum; }, {});
 			const data_amount_per_address_sorted = Object.keys(data_amount_per_address).map(function(item) { return [item, data_amount_per_address[item]]; }).sort(function(a, b) { return b[1] - a[1]; });
+			const unique_bidder_len = Object.keys(data_amount_per_address).length;
 
 			RENDERED_DATA = {
 				public: {
+					avg_land_per_bidder: (data_w_amount.length / unique_bidder_len).toFixed(1),
 					total_bid: data_w_amount.reduce(function(accum, data) { return accum += parseInt(data.amount); }, 0).toLocaleString(),
-					unique_bidders: Object.keys(data_amount_per_address).length,
+					unique_bidders: unique_bidder_len,
 					avg_bid: parseInt(
 							data_w_amount.reduce(function(accum, data) { return accum += parseInt(data.amount);  }, 0) / data_w_amount.length
 					).toLocaleString(),
