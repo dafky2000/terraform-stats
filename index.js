@@ -36,6 +36,7 @@ function data_update() {
 			RENDERED_DATA = {
 				public: {
 					total_bid: data_w_amount.reduce(function(accum, data) { return accum += parseInt(data.amount); }, 0).toLocaleString(),
+					unique_bidders: Object.keys(data_amount_per_address).length,
 					avg_bid: parseInt(
 							data_w_amount.reduce(function(accum, data) { return accum += parseInt(data.amount);  }, 0) / data_w_amount.length
 					).toLocaleString(),
