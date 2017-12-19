@@ -21,9 +21,9 @@ let LAST_UPDATE = new Date();
 let DATA = {};
 let RENDERED_DATA = {};
 function data_update() {
-	fetch('https://api.auction.decentraland.org/api/parcelState/range/-150,-150/150,150')
+	// fetch('https://api.auction.decentraland.org/api/parcelState/range/-150,-150/150,150')
 	// fetch('https://api.auction.decentraland.org/api/parcelState/range/-50,-50/50,50')
-	// fetch('https://api.auction.decentraland.org/api/parcelState/range/-25,-25/25,25')
+	fetch('https://api.auction.decentraland.org/api/parcelState/range/-25,-25/25,25')
 		.then(function(res) {
 			return res.text();
 		}).then(function(ret) {
@@ -51,6 +51,7 @@ function data_update() {
 				public: {
 					avg_land_per_bidder: (data_w_amount.length / unique_bidder_len).toFixed(1),
 					median_land_per_bidder: math.median(land_counts_per_address),
+					mode_land_per_bidder: math.mode(land_counts_per_address),
 					total_bid: data_w_amount.reduce(function(accum, data) { return accum += parseInt(data.amount); }, 0).toLocaleString(),
 					unique_bidders: unique_bidder_len,
 					avg_bid: parseInt(
