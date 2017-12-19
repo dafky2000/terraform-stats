@@ -160,27 +160,28 @@
       <p class="lead small text-right">Interactive Decentraland map by <a href="https://github.com/josiah47/decentraland-map/" target="_blank">@josiah47</a><br />ETH &amp; ERC20 donations - 0xee9268a3bc0Db1Ca59427125fDb75916884bd89e</p>
       <script type="text/javascript" src="/static/decentraland-map.js"></script>
 
-      <div class="no_address alert alert-warning" role="alert">Currently trying to get your address from MetaMask...</div>
-      <div class="have_address alert alert-success" role="alert">Address detected from MetaMask <span id="EthAddress">...</span></div>
-
 			<div class="form-group">
         <h2>Network Statistics</h2>
-				<table class="have_address table key_value">
-					<tbody>
-						<tr id="TotalStaked_MANA_ROW">
-							<th>Total staked <span class="small">(not inc. bonus)</span></th>
-							<td><span id="TotalStaked_MANA"></span> <span class="small">MANA</span></td>
-						</tr>
-						<tr>
-							<th>Your wallet balance</th>
-							<td><span id="Balance_Total"></span> <span class="small">MANA</span></td>
-						</tr>
-						<tr id="Staked_MANA_ROW">
-							<th>Your stake in the auction <span class="small">(not inc. bonus)</span></th>
-							<td><span id="Staked_MANA"></span> <span class="small">MANA</span></td>
-						</tr>
-					</tbody>
-				</table>
+        <div class="no_address alert alert-warning" role="alert">Currently trying to get your address from MetaMask...</div>
+        <div class="have_address alert alert-success" role="alert">Address detected from MetaMask <span id="EthAddress">...</span></div>
+        <div class="have_address">
+          <table class="table key_value">
+            <tbody>
+              <tr id="TotalStaked_MANA_ROW">
+                <th>Total staked <span class="small">(not inc. bonus)</span></th>
+                <td><span id="TotalStaked_MANA"></span> <span class="small">MANA</span></td>
+              </tr>
+              <tr>
+                <th>Your wallet balance</th>
+                <td><span id="Balance_Total"></span> <span class="small">MANA</span></td>
+              </tr>
+              <tr id="Staked_MANA_ROW">
+                <th>Your stake in the auction <span class="small">(not inc. bonus)</span></th>
+                <td><span id="Staked_MANA"></span> <span class="small">MANA</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 			</div>
 
       <h2>Public Statistics</h2>
@@ -203,6 +204,10 @@
           <tr>
             <th>Median LAND per bidder</th>
             <td>{{public.median_land_per_bidder}} <span class="small">LAND</span></td>
+          </tr>
+          <tr>
+            <th>Mode LAND per bidder</th>
+            <td>{{public.mode_land_per_bidder}} <span class="small">LAND</span></td>
           </tr>
           <tr>
             <th>Avg bid per LAND <span class="small">(entire auction)</span></th>
