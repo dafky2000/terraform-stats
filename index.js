@@ -4,6 +4,7 @@ const app = express();
 const router = express.Router();
 const path = __dirname + '/views/';
 const mustache_express = require('mustache-express');
+const math = require('mathjs');
 
 // Register '.mustache' extension with The Mustache Express
 app.engine('mustache', mustache_express ());
@@ -28,15 +29,20 @@ function data_update() {
 			const data_w_amount = data_for_auction.filter(function(data) { return (!isNaN(parseInt(data.amount))); });
 			const data_wo_amount = data_for_auction.filter(function(data) { return (isNaN(parseInt(data.amount))); });
 			const data_w_amount_first = data_w_amount.filter(function(data) { return (data.x <= 13 && data.x >= -12 && data.y <= 12 && data.y >= -12); });
+			// Key=>value pair object of { address: land count } eg. { 0x0000000000: 10 }
 			const data_parcels_per_address = data_w_amount.reduce(function(accum, data) { accum[data.address] = (accum[data.address] || 0) + 1; return accum;   }, {});
 			const data_parcels_per_address_sorted = Object.keys(data_parcels_per_address).map(function(item) { return [item, data_parcels_per_address[item]]; }).sort(function(a, b) { return b[1] - a[1]; });
 			const data_amount_per_address = data_w_amount.reduce(function(accum, data) { accum[data.address] = (accum[data.address] || 0) + parseInt(data.amount); return accum; }, {});
 			const data_amount_per_address_sorted = Object.keys(data_amount_per_address).map(function(item) { return [item, data_amount_per_address[item]]; }).sort(function(a, b) { return b[1] - a[1]; });
 			const unique_bidder_len = Object.keys(data_amount_per_address).length;
+			// Different from data_parcels_per_address
+			// is simply an array of counts [4,1,54,32,11]
+			const land_counts_per_address = Object.keys(data_parcels_per_address).reduce(function(accum, value) { accum.push(data_parcels_per_address[value]); return accum; }, []);
 
 			RENDERED_DATA = {
 				public: {
 					avg_land_per_bidder: (data_w_amount.length / unique_bidder_len).toFixed(1),
+					median_land_per_bidder: math.median(land_counts_per_address),
 					total_bid: data_w_amount.reduce(function(accum, data) { return accum += parseInt(data.amount); }, 0).toLocaleString(),
 					unique_bidders: unique_bidder_len,
 					avg_bid: parseInt(
