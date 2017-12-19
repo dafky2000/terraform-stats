@@ -23,5 +23,9 @@
     "mathjs": "^3.18.0",
     "mustache-express": "^1.2.5",
     "node-fetch": "^1.7.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1"
   }
 }

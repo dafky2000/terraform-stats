@@ -82,12 +82,13 @@ router.get("/", function(req,res){
 	res.render(path + "index.mustache", RENDERED_DATA);
 });
 
-router.get('/api/districts/:address', async function(req, res) {
+router.get('/api/districts/:address', async (req, res) => {
 	console.log('Getting districts for ' + req.params.address);
+
 	const data = await fetch('https://api.auction.decentraland.org/api/districts/' + req.params.address)
-		.then(function(res) {
+		.then((res) => {
 			return res.text();
-		})
+		});
 
 	res.send(data);
 });
