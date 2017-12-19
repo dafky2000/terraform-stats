@@ -20,6 +20,8 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 		<script type="text/javascript" src="https://cdn.rawgit.com/MikeMcl/bignumber.js/master/bignumber.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.12.0/axios.js"></script>
+    <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
 
 		<script type="text/javascript">
 			function startApp() {
@@ -38,11 +40,11 @@
 				document.querySelector('#EthAddress').innerText = account || '...';
 
 				// If we have a set account show all the stuff that appears with a set account
-				if(account)	Array.prototype.slice.call(document.querySelectorAll('.have_address')).map(function(item) { item.style.display = 'initial'; });
+				if(account)	Array.prototype.slice.call(document.querySelectorAll('.have_address')).map(function(item) { item.style.display = 'block'; });
 				else Array.prototype.slice.call(document.querySelectorAll('.have_address')).map(function(item) { item.style.display = 'none'; });
 
 				if(account)	Array.prototype.slice.call(document.querySelectorAll('.no_address')).map(function(item) { item.style.display = 'none'; });
-				else Array.prototype.slice.call(document.querySelectorAll('.no_address')).map(function(item) { item.style.display = 'initial'; });
+				else Array.prototype.slice.call(document.querySelectorAll('.no_address')).map(function(item) { item.style.display = 'block'; });
 
 				let contract_address = DCL_MANA_ADDRESS;
 				let contract_abi = DCL_MANA_ABI;
@@ -76,7 +78,7 @@
 				padding-top: 5rem;
 			}
 			.starter-template {
-				padding: 3rem 1.5rem 1.5rem;
+				padding: 3rem 1.5rem 1rem;
 				text-align: center;
 			}
 			.no_address {
@@ -90,6 +92,33 @@
 			}
       table.key_value td:nth-child(2) {
         text-align:right;
+      }
+      div.tooltip {
+        display: flex;
+        position: absolute;
+        text-align: center;
+        padding: 2px;
+        background: lightsteelblue;
+        border: 0px;
+        border-radius: 8px;
+        pointer-events: none;
+      }
+      .highlightAddress {
+        opacity: 1;
+        fill: #FFFFDD;
+      }
+      #svg_loader {
+        border: 16px solid #f3f3f3; /* Light grey */
+        border-top: 16px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg);  }
+        100% { transform: rotate(360deg);  }
       }
 		</style>
 	</head>
@@ -124,13 +153,19 @@
 				<p><strong>0x600EC13933A0956857e54de1Fb2A8ee4c9e32031</strong></p>
 			</div>
 
-			<div class="no_address alert alert-warning" role="alert">Currently trying to get your address from MetaMask...</div>
+      <h2>Full Interactive Map <button type="button" class="btn btn-primary" onclick="request_dcl_map(); this.style.display = 'none';" style="margin-bottom:1rem;">Load it!</button></h2>
+      <!-- <p class="lead small">(Does not load automatically, press the "Load it!" button above!)</p> -->
+      <div id="svg_loader" style="margin:0 auto; display:none;"></div>
+      <div id="decentraland-map"></div>
+      <p class="lead small text-right">Interactive Decentraland map by <a href="https://github.com/josiah47/decentraland-map/" target="_blank">@josiah47</a><br />ETH &amp; ERC20 donations - 0xee9268a3bc0Db1Ca59427125fDb75916884bd89e</p>
+      <script type="text/javascript" src="/static/decentraland-map.js"></script>
 
-			<div class="form-group have_address">
-				<div class="alert alert-success" role="alert">Address detected from MetaMask <span id="EthAddress">...</span></div>
+      <div class="no_address alert alert-warning" role="alert">Currently trying to get your address from MetaMask...</div>
+      <div class="have_address alert alert-success" role="alert">Address detected from MetaMask <span id="EthAddress">...</span></div>
 
+			<div class="form-group">
         <h2>Network Statistics</h2>
-				<table class="table key_value">
+				<table class="have_address table key_value">
 					<tbody>
 						<tr id="TotalStaked_MANA_ROW">
 							<th>Total staked <span class="small">(not inc. bonus)</span></th>
