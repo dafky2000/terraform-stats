@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/dafky2000/terraform-stats#readme",
   "dependencies": {
+    "decentraland-map": "git+https://github.com/dafky2000/decentraland-map.git#i1",
     "express": "^4.16.2",
     "mathjs": "^3.18.0",
     "mustache-express": "^1.2.5",

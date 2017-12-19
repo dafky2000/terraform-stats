@@ -1,3 +1,4 @@
+const { spawn } = require('child_process');
 const fetch = require('node-fetch');
 const express = require('express');
 const app = express();
@@ -5,6 +6,7 @@ const router = express.Router();
 const path = __dirname + '/views/';
 const mustache_express = require('mustache-express');
 const math = require('mathjs');
+const decentraland_map = require('decentraland-map');
 
 // Register '.mustache' extension with The Mustache Express
 app.engine('mustache', mustache_express ());
@@ -59,6 +61,10 @@ function data_update() {
 					last_update: LAST_UPDATE.toLocaleString(),
 				}
 			};
+
+			decentraland_map(150, __dirname + '/img/full_map.svg', { data: DATA, } );
+			console.log('Image saved');
+			spawn('convert', ['-density', '15', '-resize', '1000x1000', __dirname + '/img/full_map.svg', __dirname + '/img/full_map.png']);
 		});
 };
 
@@ -84,6 +90,8 @@ app.use("/",router);
 // app.use("*",function(req,res){
 // 	res.sendFile(path + "404.html");
 // });
+
+app.use('/img', express.static('img'))
 
 data_update();
 app.listen(8081,function(){
