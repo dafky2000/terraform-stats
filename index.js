@@ -52,10 +52,11 @@ function data_update() {
 							data_w_amount_first.reduce(function(accum, data) { return accum += parseInt(data.amount);  }, 0) / data_w_amount_first.length
 					).toLocaleString(),
 					max_bid: Math.max.apply(null, data_w_amount.map(function(data) { return data.amount; })).toLocaleString(),
-					parcels_wo_bids: data_wo_amount.length.toLocaleString(),
 					most_winning_address: data_parcels_per_address_sorted[0][0].toLocaleString(),
 					most_winning_count: data_parcels_per_address_sorted[0][1].toLocaleString(),
 					most_bid: data_amount_per_address_sorted[0][1].toLocaleString(),
+					parcels_w_bids: data_w_amount.length.toLocaleString(),
+					parcels_wo_bids: data_wo_amount.length.toLocaleString(),
 					last_update: LAST_UPDATE.toLocaleString(),
 				}
 			};
