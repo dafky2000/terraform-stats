@@ -39,8 +39,9 @@
 			function ethAddressChanged(account) {
 				document.querySelector('#EthAddress').innerText = account || '...';
 
-        if(account)
-          document.querySelector('a.LinkToAddressOfficialStats').setAttribute('href', 'https://auction.decentraland.org/addressStats/' + account);
+        if(account) {
+          document.querySelector('a#LinkToOfficialAddressStats').setAttribute('href', 'https://auction.decentraland.org/addressStats/' + account);
+        }
 
         // Populate districts for address
         if(account) {
@@ -206,7 +207,7 @@
 
 			<div class="form-group">
         <h2>Network Statistics</h2>
-        <p class="lead small">You may also view your personal statistics on the official <a class="LinkToAddressOfficialStats" href="" target="_blank">address statistics page</a></p>
+        <p class="lead small">You may also view your personal statistics on the official <a id="LinkToOfficialAddressStats" href="" target="_blank">address statistics page</a></p>
         <div class="no_address alert alert-warning" role="alert">Currently trying to get your address from MetaMask...</div>
         <div class="have_address alert alert-success" role="alert">Address detected from MetaMask <span id="EthAddress">...</span></div>
         <div class="have_address">
@@ -242,7 +243,7 @@
 
       <h2>Public Statistics</h2>
       <p class="lead small">
-        You may also view public statistics on the official <a class="LinkToAddressOfficialStats" href="" target="_blank">statistics page</a><br />
+        You may also view public statistics on the official <a href="https://auction.decentraland.org/stats/" target="_blank">statistics page</a><br />
         Last updated: {{public.last_update}} <span class="small">UTC</span>
       </p>
 
