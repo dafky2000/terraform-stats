@@ -1,10 +1,16 @@
+const fs = require('fs');
 const fetch = require('node-fetch');
+const compression = require('compression');
 const express = require('express');
 const app = express();
 const router = express.Router();
 const path = __dirname + '/views/';
 const mustache_express = require('mustache-express');
 const math = require('mathjs');
+const decentraland_map = require('decentraland-map');
+
+// Use compression!
+app.use(compression());
 
 // Register '.mustache' extension with The Mustache Express
 app.engine('mustache', mustache_express ());
@@ -17,12 +23,14 @@ let RENDERED_DATA = {};
 function data_update() {
 	fetch('https://api.auction.decentraland.org/api/parcelState/range/-150,-150/150,150')
 	// fetch('https://api.auction.decentraland.org/api/parcelState/range/-50,-50/50,50')
+	// fetch('https://api.auction.decentraland.org/api/parcelState/range/-25,-25/25,25')
 		.then(function(res) {
 			return res.text();
 		}).then(function(ret) {
 			console.log('Received new data at ' + LAST_UPDATE.toLocaleString());
 			DATA = JSON.parse(ret).data;
 			LAST_UPDATE = new Date();
+			fs.writeFile('/tmp/dcl_fullmap.json', ret, function(err) { if(err) console.error(err); });
 			setTimeout(data_update, 300000);
 		}).then(function() {
 			const data_for_auction = DATA.filter(function(data) { return !data.projectId; });
@@ -68,7 +76,7 @@ router.use(function (req,res,next) {
 	next();
 });
 
-router.get("/",function(req,res){
+router.get("/", function(req,res){
 	res.render(path + "index.mustache", RENDERED_DATA);
 });
 
@@ -80,7 +88,10 @@ router.get("/",function(req,res){
 		// res.sendFile(path + "contact.html");
 // });
 
-app.use("/",router);
+app.use("/", router);
+
+app.use('/static/dcl_fullmap.json', express.static('/tmp/dcl_fullmap.json'));
+app.use('/static/decentraland-map.js', express.static(__dirname + '/node_modules/decentraland-map/index.js'));
 
 // app.use("*",function(req,res){
 // 	res.sendFile(path + "404.html");
