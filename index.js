@@ -20,6 +20,7 @@ app.set('views', __dirname + '/views');
 let LAST_UPDATE = new Date();
 let DATA = {};
 let RENDERED_DATA = {};
+
 function data_update() {
 	fetch('https://api.auction.decentraland.org/api/parcelState/range/-150,-150/150,150')
 	// fetch('https://api.auction.decentraland.org/api/parcelState/range/-50,-50/50,50')
@@ -79,6 +80,16 @@ router.use(function (req,res,next) {
 
 router.get("/", function(req,res){
 	res.render(path + "index.mustache", RENDERED_DATA);
+});
+
+router.get('/api/districts/:address', async function(req, res) {
+	console.log('Getting districts for ' + req.params.address);
+	const data = await fetch('https://api.auction.decentraland.org/api/districts/' + req.params.address)
+		.then(function(res) {
+			return res.text();
+		})
+
+	res.send(data);
 });
 
 // router.get("/about",function(req,res){

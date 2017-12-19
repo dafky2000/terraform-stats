@@ -39,6 +39,43 @@
 			function ethAddressChanged(account) {
 				document.querySelector('#EthAddress').innerText = account || '...';
 
+        // Populate districts for address
+        if(account) {
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 
+                && this.status == 200
+                && this.responseText) {
+              let responseJSON = JSON.parse(this.responseText);
+              if(responseJSON.data) {
+                document.querySelector('#TotalStakedDistrict_LAND').innerText = responseJSON.data.reduce(function(accum, stake) { return accum + parseInt(stake.sum); }, 0);
+
+                let land_table = document.querySelector('#StakedDistricts_LAND_TABLE');
+                responseJSON.data.map(function(stake) {
+                  let land_label = document.createElement('span');
+                  land_label.className = 'small';
+                  land_label.innerText = ' LAND'
+
+                  let title = document.createElement('th');
+                  let count = document.createElement('td');
+                  let row = document.createElement('tr');
+
+                  title.innerText = stake.name;
+                  count.innerText = parseInt(stake.sum).toLocaleString() + ' ';
+                  count.append(land_label)
+
+                  row.append(title);
+                  row.append(count);
+
+                  land_table.append(row);
+                });
+              }
+            }
+          };
+          xhttp.open('GET', '/api/districts/' + account, true);
+          xhttp.send();
+        }
+
 				// If we have a set account show all the stuff that appears with a set account
 				if(account)	Array.prototype.slice.call(document.querySelectorAll('.have_address')).map(function(item) { item.style.display = 'block'; });
 				else Array.prototype.slice.call(document.querySelectorAll('.have_address')).map(function(item) { item.style.display = 'none'; });
@@ -178,6 +215,17 @@
               <tr id="Staked_MANA_ROW">
                 <th>Your stake in the auction <span class="small">(not inc. bonus)</span></th>
                 <td><span id="Staked_MANA"></span> <span class="small">MANA</span></td>
+              </tr>
+              <tr id="StakedDistricts_LAND_ROW">
+                <th>Your stake in districts</th>
+                <td>
+                  <table id="StakedDistricts_LAND_TABLE" class="table">
+                    <tr>
+                      <th>Total</th>
+                      <td><span id="TotalStakedDistrict_LAND"></span> <span class="small">LAND</span></td>
+                    </tr>
+                  </table>
+                </td>
               </tr>
             </tbody>
           </table>
